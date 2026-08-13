@@ -1,0 +1,35 @@
+name: CI
+
+on:
+  push:
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  portable:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-go@v5
+        with:
+          go-version: "1.25.x"
+          cache: true
+      - run: go test ./...
+      - run: go vet ./...
+      - run: go build ./cmd/gomorph
+
+  native:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-go@v5
+        with:
+          go-version: "1.25.x"
+          cache: true
+      - name: Install libav
+        run: sudo apt-get update && sudo apt-get install -y ffmpeg pkg-config libavcodec-dev libavformat-dev libavutil-dev libswscale-dev
+      - run: go test -tags libav ./...
+      - run: go vet -tags libav ./...
+      - run: go build -tags libav ./cmd/gomorph

@@ -1,0 +1,9 @@
+/bin/
+/reports/
+/morphdetector
+.DS_Store
+*.test
+*.mp4
+*.mov
+*.mkv
+*.webm
